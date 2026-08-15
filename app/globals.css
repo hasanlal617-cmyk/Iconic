@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-white text-navy antialiased;
+  }
+
+  ::selection {
+    @apply bg-ocean-500/20 text-ocean-900;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply border border-white/20 bg-white/10 backdrop-blur-xl;
+  }
+
+  .glass-card {
+    @apply rounded-2xl border border-white/30 bg-white/60 shadow-glass backdrop-blur-xl;
+  }
+
+  .section-padding {
+    @apply px-4 py-20 sm:px-6 lg:px-8 lg:py-28;
+  }
+
+  .section-heading {
+    @apply text-3xl font-bold tracking-tight text-navy sm:text-4xl lg:text-5xl;
+  }
+
+  .section-subheading {
+    @apply mt-4 max-w-2xl text-base text-ocean-800/80 sm:text-lg;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-ocean-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-ocean-600/25 transition-all hover:bg-ocean-700 hover:shadow-ocean-600/40 focus:outline-none focus:ring-2 focus:ring-ocean-500 focus:ring-offset-2;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-ocean-200 bg-white/80 px-6 py-3 text-sm font-semibold text-ocean-800 backdrop-blur-sm transition-all hover:border-ocean-300 hover:bg-white focus:outline-none focus:ring-2 focus:ring-ocean-500 focus:ring-offset-2;
+  }
+}
