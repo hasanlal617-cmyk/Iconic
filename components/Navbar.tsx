@@ -19,17 +19,17 @@ export default function Navbar() {
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "border-b border-white/20 bg-white/80 shadow-glass backdrop-blur-xl"
-          : "bg-transparent"
+          ? "border-b border-ocean-100/30 bg-white/85 shadow-glass backdrop-blur-xl"
+          : "bg-navy/40 backdrop-blur-md border-b border-white/10"
       }`}
     >
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3.5 sm:px-6 lg:px-8">
         {/* Logo */}
-        <a href="#" className="group flex items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-ocean-600 shadow-lg shadow-ocean-600/30 transition-transform group-hover:scale-105">
+        <a href="#" className="group flex items-center gap-2.5">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-ocean-600 to-cyan-500 shadow-lg shadow-cyan-500/25 transition-transform group-hover:scale-105">
             <Droplets className="h-5 w-5 text-white" />
           </div>
-          <span className="text-xl font-bold tracking-tight text-navy">
+          <span className={`text-xl font-bold tracking-tight transition-colors ${scrolled ? "text-navy" : "text-white"}`}>
             Iconic
           </span>
         </a>
@@ -40,7 +40,11 @@ export default function Navbar() {
             <li key={link.href}>
               <a
                 href={link.href}
-                className="text-sm font-medium text-ocean-800/80 transition-colors hover:text-ocean-600"
+                className={`text-sm font-medium transition-colors ${
+                  scrolled
+                    ? "text-ocean-900/80 hover:text-ocean-600"
+                    : "text-white/80 hover:text-cyan-accent"
+                }`}
               >
                 {link.label}
               </a>
@@ -48,14 +52,23 @@ export default function Navbar() {
           ))}
         </ul>
 
-        <a href="#contact" className="btn-primary hidden md:inline-flex">
+        <a
+          href="#contact"
+          className={`hidden md:inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-xs font-semibold uppercase tracking-wider transition-all shadow-md ${
+            scrolled
+              ? "bg-ocean-600 text-white hover:bg-ocean-700 shadow-ocean-600/20"
+              : "bg-gradient-to-r from-cyan-500 to-ocean-600 text-white hover:brightness-110 shadow-cyan-500/30"
+          }`}
+        >
           Get a Quote
         </a>
 
         {/* Mobile menu button */}
         <button
           type="button"
-          className="rounded-lg p-2 text-ocean-800 md:hidden"
+          className={`rounded-lg p-2 transition-colors md:hidden ${
+            scrolled ? "text-ocean-800" : "text-white"
+          }`}
           onClick={() => setIsOpen(!isOpen)}
           aria-label={isOpen ? "Close menu" : "Open menu"}
         >

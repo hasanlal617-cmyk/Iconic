@@ -5,14 +5,39 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 
   body {
     @apply bg-white text-navy antialiased;
+    overflow-x: clip;
+    font-feature-settings: "kern" 1, "liga" 1;
   }
 
   ::selection {
     @apply bg-ocean-500/20 text-ocean-900;
+  }
+
+  /* GPU-accelerated compositing for scroll intro */
+  #intro {
+    contain: layout style;
+  }
+
+  #intro .sticky {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
+  /* Sharper text on dark backgrounds */
+  .text-white,
+  [class*="text-white"],
+  [class*="text-cyan"],
+  [class*="text-ocean"] {
+    text-shadow: 0 0 0 transparent;
   }
 }
 
