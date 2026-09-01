@@ -2,114 +2,153 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Droplets } from "lucide-react";
+import { Menu, X, Droplets, Sparkles, ArrowUpRight } from "lucide-react";
 import { navLinks } from "@/lib/data";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState("");
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 30);
+
+      // Determine active section for nav highlight
+      const sections = ["intro", "about", "tasting", "products", "why-iconic", "contact"];
+      const scrollPosition = window.scrollY + 200;
+
+      for (const sectionId of sections) {
+        const el = document.getElementById(sectionId);
+        if (el) {
+          const top = el.offsetTop;
+          const height = el.offsetHeight;
+          if (scrollPosition >= top && scrollPosition < top + height) {
+            setActiveSection(`#${sectionId}`);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
-    <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "border-b border-ocean-100/30 bg-white/85 shadow-glass backdrop-blur-xl"
-          : "bg-navy/40 backdrop-blur-md border-b border-white/10"
-      }`}
-    >
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3.5 sm:px-6 lg:px-8">
-        {/* Logo */}
-        <a href="#" className="group flex items-center gap-2.5">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-ocean-600 to-cyan-500 shadow-lg shadow-cyan-500/25 transition-transform group-hover:scale-105">
-            <Droplets className="h-5 w-5 text-white" />
-          </div>
-          <span className={`text-xl font-bold tracking-tight transition-colors ${scrolled ? "text-navy" : "text-white"}`}>
-            Iconic
-          </span>
-        </a>
+    <header className="fixed inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6 lg:px-8 transition-all duration-500">
+      <div
+        className={`mx-auto max-w-7xl rounded-full transition-all duration-500 ${
+          scrolled
+            ? "border border-white/15 bg-navy-card/85 shadow-glass-lg backdrop-blur-2xl px-5 py-3"
+            : "border border-white/10 bg-navy/40 backdrop-blur-md px-6 py-3.5"
+        }`}
+      >
+        <nav className="flex items-center justify-between">
+          {/* Logo */}
+          <a href="#" className="group flex items-center gap-3">
+            <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-ocean-600 to-cyan-400 p-[1px] shadow-glow transition-transform duration-300 group-hover:scale-105">
+              <div className="flex h-full w-full items-center justify-center rounded-[11px] bg-navy-card">
+                <Droplets className="h-5 w-5 text-cyan-300 transition-colors group-hover:text-white" />
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <span className="font-display text-lg font-black tracking-wider text-white uppercase group-hover:text-cyan-200 transition-colors">
+                Iconic
+              </span>
+              <span className="text-[9px] font-semibold tracking-[0.25em] text-cyan-400/80 uppercase -mt-1">
+                Haute Alpine
+              </span>
+            </div>
+          </a>
 
-        {/* Desktop nav */}
-        <ul className="hidden items-center gap-8 md:flex">
-          {navLinks.map((link) => (
-            <li key={link.href}>
-              <a
-                href={link.href}
-                className={`text-sm font-medium transition-colors ${
-                  scrolled
-                    ? "text-ocean-900/80 hover:text-ocean-600"
-                    : "text-white/80 hover:text-cyan-accent"
-                }`}
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-
-        <a
-          href="#contact"
-          className={`hidden md:inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-xs font-semibold uppercase tracking-wider transition-all shadow-md ${
-            scrolled
-              ? "bg-ocean-600 text-white hover:bg-ocean-700 shadow-ocean-600/20"
-              : "bg-gradient-to-r from-cyan-500 to-ocean-600 text-white hover:brightness-110 shadow-cyan-500/30"
-          }`}
-        >
-          Get a Quote
-        </a>
-
-        {/* Mobile menu button */}
-        <button
-          type="button"
-          className={`rounded-lg p-2 transition-colors md:hidden ${
-            scrolled ? "text-ocean-800" : "text-white"
-          }`}
-          onClick={() => setIsOpen(!isOpen)}
-          aria-label={isOpen ? "Close menu" : "Open menu"}
-        >
-          {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
-      </nav>
-
-      {/* Mobile menu */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="overflow-hidden border-b border-white/20 bg-white/95 backdrop-blur-xl md:hidden"
-          >
-            <ul className="flex flex-col gap-1 px-4 py-4">
-              {navLinks.map((link) => (
+          {/* Desktop nav items */}
+          <ul className="hidden items-center gap-1 lg:gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 backdrop-blur-md md:flex">
+            {navLinks.map((link) => {
+              const isActive = activeSection === link.href;
+              return (
                 <li key={link.href}>
                   <a
                     href={link.href}
-                    className="block rounded-lg px-4 py-3 text-sm font-medium text-ocean-800 hover:bg-ocean-50"
-                    onClick={() => setIsOpen(false)}
+                    className={`relative rounded-full px-4 py-1.5 text-xs font-semibold tracking-wider uppercase transition-all duration-300 ${
+                      isActive
+                        ? "text-cyan-300 bg-cyan-500/15 border border-cyan-400/30 shadow-sm"
+                        : "text-slate-300 hover:text-white hover:bg-white/[0.06]"
+                    }`}
                   >
                     {link.label}
                   </a>
                 </li>
-              ))}
-              <li className="pt-2">
-                <a
-                  href="#contact"
-                  className="btn-primary w-full"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Get a Quote
-                </a>
-              </li>
-            </ul>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              );
+            })}
+          </ul>
+
+          {/* Action CTAs */}
+          <div className="hidden items-center gap-3 md:flex">
+            <a
+              href="#tasting"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-cyan-300/90 hover:text-cyan-200 transition-colors px-3 py-2"
+            >
+              <Sparkles className="h-3.5 w-3.5 text-cyan-400" />
+              Sommelier Notes
+            </a>
+
+            <a
+              href="#contact"
+              className="group relative inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-cyan-500 to-ocean-600 px-5 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-glow transition-all duration-300 hover:scale-105 hover:shadow-glow-lg hover:from-cyan-400 hover:to-ocean-500"
+            >
+              <span>Request Quote</span>
+              <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </a>
+          </div>
+
+          {/* Mobile menu button */}
+          <button
+            type="button"
+            className="rounded-xl border border-white/15 bg-white/[0.06] p-2 text-white transition-colors hover:bg-white/10 md:hidden"
+            onClick={() => setIsOpen(!isOpen)}
+            aria-label={isOpen ? "Close menu" : "Open menu"}
+          >
+            {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </nav>
+
+        {/* Mobile dropdown */}
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0, marginTop: 0 }}
+              animate={{ opacity: 1, height: "auto", marginTop: 16 }}
+              exit={{ opacity: 0, height: 0, marginTop: 0 }}
+              transition={{ duration: 0.3 }}
+              className="overflow-hidden border-t border-white/10 pt-4 md:hidden"
+            >
+              <ul className="flex flex-col gap-2 pb-3">
+                {navLinks.map((link) => (
+                  <li key={link.href}>
+                    <a
+                      href={link.href}
+                      className="block rounded-xl px-4 py-2.5 text-sm font-medium text-slate-200 hover:bg-cyan-500/10 hover:text-cyan-300 transition-colors"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+                <li className="pt-2">
+                  <a
+                    href="#contact"
+                    className="btn-primary w-full text-center"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Request Concierge Allocation
+                  </a>
+                </li>
+              </ul>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </header>
   );
 }

@@ -2,20 +2,22 @@
 
 import { useState, FormEvent } from "react";
 import { motion } from "framer-motion";
-import { Send, Building2, Users, Calendar } from "lucide-react";
+import { Send, Building2, Users, Calendar, Sparkles, CheckCircle2, Shield, ArrowRight } from "lucide-react";
 import OptimizedImage from "./OptimizedImage";
 import { images } from "@/lib/images";
 
-type InquiryType = "distributor" | "corporate" | "events";
+type InquiryType = "distributor" | "corporate" | "events" | "hospitality";
 
 const inquiryTypes: { id: InquiryType; label: string; icon: typeof Building2 }[] = [
-  { id: "distributor", label: "Distributor", icon: Building2 },
-  { id: "corporate", label: "Corporate Client", icon: Users },
-  { id: "events", label: "Event Planner", icon: Calendar },
+  { id: "corporate", label: "Corporate HQ", icon: Users },
+  { id: "hospitality", label: "Michelin & Luxury Hotel", icon: Sparkles },
+  { id: "events", label: "Private Galas & Events", icon: Calendar },
+  { id: "distributor", label: "Global Distribution", icon: Building2 },
 ];
 
 export default function ContactForm() {
   const [inquiryType, setInquiryType] = useState<InquiryType>("corporate");
+  const [volume, setVolume] = useState("1000-5000");
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -24,112 +26,137 @@ export default function ContactForm() {
   };
 
   return (
-    <section id="contact" className="section-padding bg-gradient-to-b from-white to-ocean-50/50">
-      <div className="mx-auto max-w-7xl">
+    <section id="contact" className="section-padding bg-navy-light/70 relative overflow-hidden">
+      {/* Background ambient lighting */}
+      <div className="pointer-events-none absolute -left-40 top-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-cyan-500/10 blur-[150px]" />
+
+      <div className="mx-auto max-w-7xl relative z-10">
         <div className="grid items-stretch gap-12 lg:grid-cols-2 lg:gap-16">
-          {/* Left — info + image panel */}
+          
+          {/* Left: Info & Distribution Capabilities */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="flex flex-col"
+            transition={{ duration: 0.6 }}
+            className="flex flex-col justify-between"
           >
-            <p className="text-sm font-semibold uppercase tracking-wider text-ocean-600">
-              Bulk & Distribution
-            </p>
-            <h2 className="section-heading mt-2">Partner With Iconic</h2>
-            <p className="section-subheading">
-              Whether you&apos;re a distributor, corporate buyer, or event planner,
-              our team will craft a tailored quote for your hydration needs.
-            </p>
-
-            {/* Distribution image */}
-            <div className="relative mt-8 aspect-[16/10] overflow-hidden rounded-2xl shadow-glass-lg">
-              <OptimizedImage
-                src={images.contact.distribution}
-                alt="Iconic bulk water distribution and logistics"
-                fill
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover"
-                wrapperClassName="h-full w-full"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-navy/50 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-6">
-                <p className="text-sm font-medium text-white/90">
-                  Trusted by 500+ corporate partners nationwide
-                </p>
+            <div>
+              <div className="glass-pill shadow-glow">
+                <Sparkles className="h-3.5 w-3.5 text-cyan-300" />
+                <span>Concierge & Private Allocation</span>
               </div>
-            </div>
+              <h2 className="section-heading mt-4">
+                Partner With{" "}
+                <span className="font-serif italic font-normal text-gradient-cyan">
+                  Iconic.
+                </span>
+              </h2>
+              <p className="section-subheading">
+                Whether you are curating a 5-star hospitality guest experience, stocking an executive boardroom, or orchestrating a premier private gala, our concierge desk tailors private allocations.
+              </p>
 
-            <div className="mt-8 space-y-5">
-              {[
-                {
-                  title: "Volume Discounts",
-                  text: "Competitive pricing for orders of 500+ units.",
-                },
-                {
-                  title: "Custom Branding",
-                  text: "White-label and co-branded options for corporate clients.",
-                },
-                {
-                  title: "Fast Fulfillment",
-                  text: "Nationwide delivery with dedicated account support.",
-                },
-              ].map((item) => (
-                <div key={item.title} className="flex gap-4">
-                  <div className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-ocean-500" />
-                  <div>
-                    <p className="font-semibold text-navy">{item.title}</p>
-                    <p className="mt-1 text-sm text-ocean-800/70">{item.text}</p>
-                  </div>
+              {/* Distribution visual */}
+              <div className="relative mt-8 aspect-[16/9] overflow-hidden rounded-3xl border border-white/10 shadow-glass-lg">
+                <OptimizedImage
+                  src={images.contact.distribution}
+                  alt="Iconic bulk water distribution and logistics"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="object-cover"
+                  wrapperClassName="h-full w-full"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/30 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-6">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-cyan-300">
+                    White Glove Cold-Chain Logistics
+                  </p>
+                  <p className="font-display text-lg font-bold text-white mt-0.5">
+                    Direct-From-Source Express Delivery Worldwide
+                  </p>
                 </div>
-              ))}
+              </div>
+
+              <div className="mt-8 space-y-4">
+                {[
+                  {
+                    title: "Bespoke Glass Etching & Co-Branding",
+                    text: "Exclusive custom-etched glass bottles for luxury hospitality and private clubs.",
+                  },
+                  {
+                    title: "Guaranteed Origin & Batch Authentication",
+                    text: "Every consignment is numbered and tested by certified European water sommeliers.",
+                  },
+                  {
+                    title: "Climate-Controlled Global Fulfillment",
+                    text: "Temperature-regulated transit preserving crisp alpine purity without thermal shock.",
+                  },
+                ].map((item) => (
+                  <div key={item.title} className="flex items-start gap-3.5 glass-card-hover p-4 border-white/10">
+                    <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-cyan-500/20 text-cyan-300">
+                      <CheckCircle2 className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <p className="font-display font-bold text-white text-sm">{item.title}</p>
+                      <p className="mt-0.5 text-xs text-slate-300">{item.text}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </motion.div>
 
-          {/* Right — form */}
+          {/* Right: Interactive Concierge Form */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.6 }}
           >
-            <div className="glass-card h-full p-8 sm:p-10">
+            <div className="glass-card h-full p-8 sm:p-10 border-white/15">
               {submitted ? (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="flex h-full flex-col items-center justify-center py-12 text-center"
+                  className="flex h-full flex-col items-center justify-center py-16 text-center"
                 >
-                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-ocean-100 text-ocean-600">
-                    <Send className="h-7 w-7" />
+                  <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 shadow-glow">
+                    <Sparkles className="h-10 w-10 text-cyan-300" />
                   </div>
-                  <h3 className="mt-6 text-xl font-bold text-navy">Thank You!</h3>
-                  <p className="mt-2 text-ocean-800/70">
-                    Our sales team will reach out within 24 hours with your custom quote.
+                  <h3 className="font-display mt-6 text-2xl font-bold text-white">
+                    Concierge Request Received
+                  </h3>
+                  <p className="mt-3 text-slate-300 max-w-sm text-sm">
+                    Thank you. A dedicated Iconic allocation manager will review your requirements and reach out within 24 hours.
                   </p>
+                  <button
+                    type="button"
+                    onClick={() => setSubmitted(false)}
+                    className="btn-secondary mt-8 text-xs py-2 px-6"
+                  >
+                    Submit Another Request
+                  </button>
                 </motion.div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
-                    <label className="mb-3 block text-sm font-medium text-navy">
-                      I am a...
+                    <label className="mb-3 block text-xs font-bold uppercase tracking-wider text-cyan-300">
+                      Client Profile
                     </label>
-                    <div className="grid grid-cols-3 gap-2">
+                    <div className="grid grid-cols-2 gap-2.5">
                       {inquiryTypes.map(({ id, label, icon: Icon }) => (
                         <button
                           key={id}
                           type="button"
                           onClick={() => setInquiryType(id)}
-                          className={`flex flex-col items-center gap-2 rounded-xl border p-3 text-xs font-medium transition-all sm:text-sm ${
+                          className={`flex items-center gap-2.5 rounded-2xl border p-3 text-left transition-all duration-300 ${
                             inquiryType === id
-                              ? "border-ocean-500 bg-ocean-50 text-ocean-700"
-                              : "border-ocean-100 text-ocean-700/70 hover:border-ocean-200"
+                              ? "border-cyan-400 bg-cyan-500/20 text-cyan-200 shadow-glow"
+                              : "border-white/10 bg-white/[0.03] text-slate-300 hover:bg-white/[0.06]"
                           }`}
                         >
-                          <Icon className="h-5 w-5" />
-                          {label}
+                          <Icon className="h-4 w-4 shrink-0 text-cyan-400" />
+                          <span className="text-xs font-bold leading-tight">{label}</span>
                         </button>
                       ))}
                     </div>
@@ -137,7 +164,7 @@ export default function ContactForm() {
 
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div>
-                      <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-navy">
+                      <label htmlFor="name" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-300">
                         Full Name
                       </label>
                       <input
@@ -145,89 +172,94 @@ export default function ContactForm() {
                         name="name"
                         type="text"
                         required
-                        placeholder="John Smith"
-                        className="w-full rounded-xl border border-ocean-200 bg-white px-4 py-3 text-sm text-navy placeholder:text-ocean-400 focus:border-ocean-500 focus:outline-none focus:ring-2 focus:ring-ocean-500/20"
+                        placeholder="Lord Alexander Sterling"
+                        className="w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-cyan-400 focus:bg-white/[0.08] focus:outline-none focus:ring-1 focus:ring-cyan-400/50 transition-colors"
                       />
                     </div>
+
                     <div>
-                      <label htmlFor="company" className="mb-1.5 block text-sm font-medium text-navy">
-                        Company
+                      <label htmlFor="company" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-300">
+                        Company / Establishment
                       </label>
                       <input
                         id="company"
                         name="company"
                         type="text"
                         required
-                        placeholder="Acme Corp"
-                        className="w-full rounded-xl border border-ocean-200 bg-white px-4 py-3 text-sm text-navy placeholder:text-ocean-400 focus:border-ocean-500 focus:outline-none focus:ring-2 focus:ring-ocean-500/20"
+                        placeholder="The Grand Alpine Resort"
+                        className="w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-cyan-400 focus:bg-white/[0.08] focus:outline-none focus:ring-1 focus:ring-cyan-400/50 transition-colors"
                       />
                     </div>
                   </div>
 
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div>
-                      <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-navy">
-                        Email
+                      <label htmlFor="email" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-300">
+                        Work Email
                       </label>
                       <input
                         id="email"
                         name="email"
                         type="email"
                         required
-                        placeholder="john@company.com"
-                        className="w-full rounded-xl border border-ocean-200 bg-white px-4 py-3 text-sm text-navy placeholder:text-ocean-400 focus:border-ocean-500 focus:outline-none focus:ring-2 focus:ring-ocean-500/20"
+                        placeholder="concierge@hotel.com"
+                        className="w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-cyan-400 focus:bg-white/[0.08] focus:outline-none focus:ring-1 focus:ring-cyan-400/50 transition-colors"
                       />
                     </div>
+
                     <div>
-                      <label htmlFor="phone" className="mb-1.5 block text-sm font-medium text-navy">
-                        Phone
+                      <label htmlFor="phone" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-300">
+                        Direct Phone
                       </label>
                       <input
                         id="phone"
                         name="phone"
                         type="tel"
-                        placeholder="+1 (555) 000-0000"
-                        className="w-full rounded-xl border border-ocean-200 bg-white px-4 py-3 text-sm text-navy placeholder:text-ocean-400 focus:border-ocean-500 focus:outline-none focus:ring-2 focus:ring-ocean-500/20"
+                        placeholder="+41 22 555 0192"
+                        className="w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-cyan-400 focus:bg-white/[0.08] focus:outline-none focus:ring-1 focus:ring-cyan-400/50 transition-colors"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label htmlFor="volume" className="mb-1.5 block text-sm font-medium text-navy">
-                      Estimated Volume
+                    <label htmlFor="volume" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-300">
+                      Estimated Monthly Volume / Allocation
                     </label>
                     <select
                       id="volume"
                       name="volume"
-                      className="w-full rounded-xl border border-ocean-200 bg-white px-4 py-3 text-sm text-navy focus:border-ocean-500 focus:outline-none focus:ring-2 focus:ring-ocean-500/20"
+                      value={volume}
+                      onChange={(e) => setVolume(e.target.value)}
+                      className="w-full rounded-2xl border border-white/10 bg-navy-card px-4 py-3 text-sm text-white focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan-400/50"
                     >
-                      <option value="500-1000">500 – 1,000 units</option>
-                      <option value="1000-5000">1,000 – 5,000 units</option>
-                      <option value="5000+">5,000+ units</option>
+                      <option value="500-1000" className="bg-navy-card">Sample Tasting Kit / 500 – 1,000 units</option>
+                      <option value="1000-5000" className="bg-navy-card">Standard Allocation / 1,000 – 5,000 units</option>
+                      <option value="5000+" className="bg-navy-card">Premier Enterprise / 5,000+ units</option>
                     </select>
                   </div>
 
                   <div>
-                    <label htmlFor="message" className="mb-1.5 block text-sm font-medium text-navy">
-                      Message
+                    <label htmlFor="message" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-300">
+                      Specific Requirements / Custom Branding
                     </label>
                     <textarea
                       id="message"
                       name="message"
-                      rows={4}
-                      placeholder="Tell us about your requirements..."
-                      className="w-full resize-none rounded-xl border border-ocean-200 bg-white px-4 py-3 text-sm text-navy placeholder:text-ocean-400 focus:border-ocean-500 focus:outline-none focus:ring-2 focus:ring-ocean-500/20"
+                      rows={3}
+                      placeholder="Specify customized glass formats, delivery schedules, or special events..."
+                      className="w-full resize-none rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-cyan-400 focus:bg-white/[0.08] focus:outline-none focus:ring-1 focus:ring-cyan-400/50 transition-colors"
                     />
                   </div>
 
                   <button type="submit" className="btn-primary w-full group">
-                    Request Quote
+                    <span>Submit Concierge Request</span>
                     <Send className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </button>
                 </form>
               )}
             </div>
           </motion.div>
+
         </div>
       </div>
     </section>
