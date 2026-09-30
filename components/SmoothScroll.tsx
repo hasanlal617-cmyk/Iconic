@@ -5,19 +5,18 @@ import Lenis from "lenis";
 
 export default function SmoothScroll({ children }: { children: ReactNode }) {
   useEffect(() => {
-    // Initialize Lenis for luxurious buttery-smooth scroll
+    // Ultra-smooth 60fps/120fps inertia scrolling without input delay
     const lenis = new Lenis({
-      duration: 1.15,
+      duration: 0.8,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
-      wheelMultiplier: 0.9,
+      wheelMultiplier: 1.0,
       touchMultiplier: 1.5,
-      syncTouch: false,
+      infinite: false,
     });
 
-    // Sync RAF
     let rafId: number;
     function raf(time: number) {
       lenis.raf(time);
@@ -38,7 +37,7 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
         e.preventDefault();
         const element = document.querySelector(href);
         if (element instanceof HTMLElement) {
-          lenis.scrollTo(element, { offset: -20, duration: 1.4 });
+          lenis.scrollTo(element, { offset: -20, duration: 1.0 });
         }
       }
     };

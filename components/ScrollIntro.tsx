@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, ChevronDown, Sparkles, Droplets, ShieldCheck, Compass, Award, Mountain, Wind, CheckCircle2 } from "lucide-react";
 import WaterParticlesCanvas from "./WaterParticlesCanvas";
 import OptimizedImage from "./OptimizedImage";
@@ -12,18 +12,10 @@ export default function ScrollIntro() {
   const [mounted, setMounted] = useState(false);
   const [activeChapter, setActiveChapter] = useState(0);
 
-  // Track scroll progression through the container
+  // Direct scroll tracking synchronized with Lenis for instant 60fps/120fps responsiveness
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
-  });
-
-  // Silky smooth spring interpolation
-  const smoothProgress = useSpring(scrollYProgress, {
-    damping: 40,
-    stiffness: 90,
-    mass: 0.7,
-    restDelta: 0.0005,
   });
 
   // Track active chapter
@@ -38,7 +30,7 @@ export default function ScrollIntro() {
     return () => unsubscribe();
   }, [scrollYProgress]);
 
-  // Mouse tilt parallax for the central 3D element
+  // Mouse tilt parallax for the central 3D element (subtle & lightweight)
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const { clientX, clientY, currentTarget } = e;
@@ -48,36 +40,33 @@ export default function ScrollIntro() {
     setMousePos({ x, y });
   };
 
-  // ------------------ STAGE TRANSFORMATIONS ------------------
+  // ------------------ STAGE TRANSFORMATIONS (Hardware GPU Accelerated) ------------------
   // Bottle transforms across stages
-  const bottleX = useTransform(smoothProgress, [0, 0.25, 0.55, 0.8, 1], ["28%", "0%", "-28%", "0%", "0%"]);
-  const bottleY = useTransform(smoothProgress, [0, 0.25, 0.55, 0.8, 1], [30, 0, -10, 0, -15]);
-  const bottleScale = useTransform(smoothProgress, [0, 0.25, 0.55, 0.8, 1], [0.9, 1.05, 1.12, 1.18, 1.02]);
-  const bottleRotateY = useTransform(smoothProgress, [0, 0.3, 0.6, 0.85, 1], [-18, 0, 14, -8, 0]);
-  const bottleRotateZ = useTransform(smoothProgress, [0, 0.3, 0.6, 1], [-3, 0, 3, 0]);
+  const bottleX = useTransform(scrollYProgress, [0, 0.25, 0.55, 0.8, 1], ["26%", "0%", "-26%", "0%", "0%"]);
+  const bottleY = useTransform(scrollYProgress, [0, 0.25, 0.55, 0.8, 1], [30, 0, -10, 0, -15]);
+  const bottleScale = useTransform(scrollYProgress, [0, 0.25, 0.55, 0.8, 1], [0.92, 1.05, 1.1, 1.15, 1.02]);
+  const bottleRotateY = useTransform(scrollYProgress, [0, 0.3, 0.6, 0.85, 1], [-15, 0, 12, -6, 0]);
+  const bottleRotateZ = useTransform(scrollYProgress, [0, 0.3, 0.6, 1], [-2, 0, 2, 0]);
 
   // Background shifts
-  const bgScale = useTransform(smoothProgress, [0, 1], [1.15, 1.0]);
-  const bgBrightness = useTransform(smoothProgress, [0, 0.3, 0.6, 1], [0.65, 0.45, 0.52, 0.7]);
-  const glowOpacity = useTransform(smoothProgress, [0, 0.3, 0.6, 0.9], [0.5, 0.85, 0.7, 0.95]);
+  const bgScale = useTransform(scrollYProgress, [0, 1], [1.1, 1.0]);
 
   // Chapter 1 Animations (Glacial Origin)
-  const ch1Opacity = useTransform(smoothProgress, [0, 0.18, 0.26], [1, 1, 0]);
-  const ch1Y = useTransform(smoothProgress, [0, 0.18, 0.26], [0, 0, -40]);
-  const ch1Scale = useTransform(smoothProgress, [0, 0.18, 0.26], [1, 1, 0.95]);
+  const ch1Opacity = useTransform(scrollYProgress, [0, 0.18, 0.26], [1, 1, 0]);
+  const ch1Y = useTransform(scrollYProgress, [0, 0.18, 0.26], [0, 0, -35]);
 
   // Chapter 2 Animations (15-Year Filtration & Minerals)
-  const ch2Opacity = useTransform(smoothProgress, [0.26, 0.34, 0.5, 0.58], [0, 1, 1, 0]);
-  const ch2Y = useTransform(smoothProgress, [0.26, 0.34, 0.5, 0.58], [40, 0, 0, -40]);
-  const mineralCardsScale = useTransform(smoothProgress, [0.28, 0.38, 0.5, 0.56], [0.85, 1, 1, 0.9]);
+  const ch2Opacity = useTransform(scrollYProgress, [0.26, 0.34, 0.5, 0.58], [0, 1, 1, 0]);
+  const ch2Y = useTransform(scrollYProgress, [0.26, 0.34, 0.5, 0.58], [35, 0, 0, -35]);
+  const mineralCardsScale = useTransform(scrollYProgress, [0.28, 0.38, 0.5, 0.56], [0.9, 1, 1, 0.92]);
 
   // Chapter 3 Animations (Purity & Craft)
-  const ch3Opacity = useTransform(smoothProgress, [0.58, 0.66, 0.78, 0.84], [0, 1, 1, 0]);
-  const ch3Y = useTransform(smoothProgress, [0.58, 0.66, 0.78, 0.84], [40, 0, 0, -40]);
+  const ch3Opacity = useTransform(scrollYProgress, [0.58, 0.66, 0.78, 0.84], [0, 1, 1, 0]);
+  const ch3Y = useTransform(scrollYProgress, [0.58, 0.66, 0.78, 0.84], [35, 0, 0, -35]);
 
   // Chapter 4 Animations (Final CTA / Climax)
-  const ch4Opacity = useTransform(smoothProgress, [0.82, 0.9, 1], [0, 1, 1]);
-  const ch4Y = useTransform(smoothProgress, [0.82, 0.9, 1], [50, 0, 0]);
+  const ch4Opacity = useTransform(scrollYProgress, [0.82, 0.9, 1], [0, 1, 1]);
+  const ch4Y = useTransform(scrollYProgress, [0.82, 0.9, 1], [40, 0, 0]);
 
   // Chapter Depth Labels
   const chapterDepthLabels = [
@@ -95,7 +84,7 @@ export default function ScrollIntro() {
     const targetScroll = containerTop + containerHeight * stepRatio;
 
     if ((window as any).lenis) {
-      (window as any).lenis.scrollTo(targetScroll, { duration: 1.5 });
+      (window as any).lenis.scrollTo(targetScroll, { duration: 1.0 });
     } else {
       window.scrollTo({ top: targetScroll, behavior: "smooth" });
     }
@@ -106,7 +95,7 @@ export default function ScrollIntro() {
     const nextSection = document.getElementById("about") || document.getElementById("products");
     if (nextSection) {
       if ((window as any).lenis) {
-        (window as any).lenis.scrollTo(nextSection, { offset: -20, duration: 1.4 });
+        (window as any).lenis.scrollTo(nextSection, { offset: -20, duration: 1.0 });
       } else {
         nextSection.scrollIntoView({ behavior: "smooth" });
       }
@@ -117,16 +106,16 @@ export default function ScrollIntro() {
     <section
       ref={containerRef}
       id="intro"
-      className="relative h-[420vh] w-full bg-navy"
+      className="relative h-[380vh] w-full bg-navy"
       onMouseMove={handleMouseMove}
     >
       {/* Sticky Fullscreen Viewport */}
-      <div className="sticky top-0 h-screen w-full overflow-hidden bg-navy text-white flex items-center justify-center">
+      <div className="sticky top-0 h-screen w-full overflow-hidden bg-navy text-white flex items-center justify-center transform-gpu">
         
-        {/* Background Alpine Image with Parallax & Cinematic Grades */}
+        {/* Background Alpine Image with Parallax */}
         <motion.div
-          className="absolute inset-0 -z-30 h-full w-full"
-          style={{ scale: bgScale }}
+          className="absolute inset-0 -z-30 h-full w-full transform-gpu"
+          style={{ scale: bgScale, willChange: "transform" }}
         >
           <OptimizedImage
             src={images.hero.background}
@@ -137,27 +126,17 @@ export default function ScrollIntro() {
             className="object-cover object-center"
             wrapperClassName="h-full w-full"
           />
-          {/* Multi-layered cinematic gradient overlays */}
-          <div className="absolute inset-0 bg-gradient-to-b from-navy/95 via-navy/75 to-navy" />
-          <motion.div
-            className="absolute inset-0 bg-navy/60 backdrop-blur-[2px]"
-            style={{ opacity: bgBrightness }}
-          />
+          {/* Multi-layered cinematic gradient overlays (clean GPU alpha instead of blur) */}
+          <div className="absolute inset-0 bg-gradient-to-b from-navy/95 via-navy/70 to-navy" />
+          <div className="absolute inset-0 bg-navy/40" />
         </motion.div>
 
-        {/* Ambient Canvas with Floating Water Bubbles & Caustic Refractions */}
+        {/* Ambient Canvas with Floating Water Bubbles */}
         <WaterParticlesCanvas />
 
         {/* Ambient Glowing Light Orbs */}
-        <motion.div
-          className="pointer-events-none absolute -left-28 top-1/4 h-[600px] w-[600px] rounded-full bg-ocean-500/20 blur-[140px]"
-          style={{ opacity: glowOpacity }}
-        />
-        <motion.div
-          className="pointer-events-none absolute -right-28 bottom-1/4 h-[650px] w-[650px] rounded-full bg-cyan-accent/20 blur-[150px]"
-          style={{ opacity: glowOpacity }}
-        />
-        <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[500px] rounded-full bg-cyan-400/10 blur-[120px]" />
+        <div className="pointer-events-none absolute -left-20 top-1/4 h-[450px] w-[450px] rounded-full bg-ocean-500/15 blur-[100px]" />
+        <div className="pointer-events-none absolute -right-20 bottom-1/4 h-[450px] w-[450px] rounded-full bg-cyan-accent/15 blur-[100px]" />
 
         {/* TOP STATUS BAR ACCENT */}
         <div className="absolute top-20 sm:top-24 left-0 right-0 z-40 px-6 md:px-12 flex items-center justify-between pointer-events-auto">
@@ -173,7 +152,7 @@ export default function ScrollIntro() {
           {/* Skip Intro Button */}
           <button
             onClick={skipIntro}
-            className="group flex items-center gap-2 rounded-full border border-white/20 bg-white/[0.08] px-4 py-2 text-xs font-semibold tracking-wider uppercase text-white/90 backdrop-blur-xl transition-all duration-300 hover:border-cyan-400/50 hover:bg-white/15 hover:text-white"
+            className="group flex items-center gap-2 rounded-full border border-white/20 bg-navy-card/80 px-4 py-2 text-xs font-semibold tracking-wider uppercase text-white/90 backdrop-blur-md transition-all duration-300 hover:border-cyan-400/50 hover:bg-white/15 hover:text-white"
           >
             <span>Skip To Collection</span>
             <ChevronDown className="h-3.5 w-3.5 transition-transform group-hover:translate-y-0.5 text-cyan-accent" />
@@ -185,7 +164,7 @@ export default function ScrollIntro() {
 
           {/* CENTER 3D BOTTLE SHOWPIECE */}
           <motion.div
-            className="absolute z-20 flex items-center justify-center pointer-events-none"
+            className="absolute z-20 flex items-center justify-center pointer-events-none transform-gpu"
             style={{
               x: bottleX,
               y: bottleY,
@@ -194,16 +173,17 @@ export default function ScrollIntro() {
               rotateZ: bottleRotateZ,
               transformStyle: "preserve-3d",
               perspective: 1200,
+              willChange: "transform",
             }}
           >
             <div
-              className="relative transition-transform duration-200 ease-out"
+              className="relative transition-transform duration-150 ease-out transform-gpu"
               style={{
-                transform: `rotateX(${-mousePos.y * 12}deg) rotateY(${mousePos.x * 12}deg)`,
+                transform: `rotateX(${-mousePos.y * 10}deg) rotateY(${mousePos.x * 10}deg)`,
               }}
             >
               {/* Outer Radiant Aura Halo */}
-              <div className="pointer-events-none absolute -inset-10 rounded-full bg-gradient-to-tr from-cyan-accent/25 via-ocean-500/20 to-transparent blur-3xl animate-pulse" />
+              <div className="pointer-events-none absolute -inset-8 rounded-full bg-cyan-500/20 blur-2xl animate-pulse" />
 
               {/* Central Bottle Container */}
               <div className="relative h-[380px] w-[220px] sm:h-[480px] sm:w-[280px] md:h-[540px] md:w-[320px] lg:h-[600px] lg:w-[360px]">
@@ -213,11 +193,11 @@ export default function ScrollIntro() {
                   fill
                   priority
                   sizes="(max-width: 768px) 280px, 360px"
-                  className="object-contain drop-shadow-[0_25px_60px_rgba(14,165,233,0.5)] filter"
+                  className="object-contain drop-shadow-[0_20px_40px_rgba(14,165,233,0.45)]"
                   wrapperClassName="h-full w-full"
                 />
 
-                {/* Shimmering Specular Light Reflection Sweep */}
+                {/* Specular Light Reflection Sweep */}
                 <div
                   className="pointer-events-none absolute inset-0 mix-blend-overlay overflow-hidden rounded-3xl"
                   style={{
@@ -232,14 +212,14 @@ export default function ScrollIntro() {
                   }}
                 >
                   <motion.div
-                    className="absolute -inset-y-1/2 -left-1/2 w-[200%] bg-gradient-to-r from-transparent via-white/80 to-transparent"
+                    className="absolute -inset-y-1/2 -left-1/2 w-[200%] bg-gradient-to-r from-transparent via-white/75 to-transparent"
                     animate={{
                       x: ["-100%", "100%"],
                     }}
                     transition={{
                       repeat: Infinity,
-                      repeatDelay: 3,
-                      duration: 2.2,
+                      repeatDelay: 3.5,
+                      duration: 2.0,
                       ease: "easeInOut",
                     }}
                     style={{ transform: "rotate(25deg)" }}
@@ -247,18 +227,18 @@ export default function ScrollIntro() {
                 </div>
               </div>
 
-              {/* Water Splash & Bottom Reflection Ring */}
-              <div className="pointer-events-none absolute -bottom-6 left-1/2 h-8 w-4/5 -translate-x-1/2 rounded-[100%] bg-cyan-accent/35 blur-md" />
+              {/* Floor Shadow Ring */}
+              <div className="pointer-events-none absolute -bottom-5 left-1/2 h-6 w-3/4 -translate-x-1/2 rounded-[100%] bg-cyan-500/25 blur-sm" />
             </div>
           </motion.div>
 
           {/* ================= CHAPTER 1: GLACIAL ORIGIN ================= */}
           <motion.div
-            className="absolute inset-0 z-30 flex flex-col justify-center items-center md:items-start max-w-xl text-center md:text-left pointer-events-none"
+            className="absolute inset-0 z-30 flex flex-col justify-center items-center md:items-start max-w-xl text-center md:text-left pointer-events-none transform-gpu"
             style={{
               opacity: ch1Opacity,
               y: ch1Y,
-              scale: ch1Scale,
+              willChange: "transform, opacity",
             }}
           >
             <div className="glass-pill shadow-glow">
@@ -291,10 +271,11 @@ export default function ScrollIntro() {
 
           {/* ================= CHAPTER 2: 15-YEAR MINERAL FILTRATION ================= */}
           <motion.div
-            className="absolute inset-0 z-30 flex flex-col justify-between py-24 sm:py-28 pointer-events-none"
+            className="absolute inset-0 z-30 flex flex-col justify-between py-24 sm:py-28 pointer-events-none transform-gpu"
             style={{
               opacity: ch2Opacity,
               y: ch2Y,
+              willChange: "transform, opacity",
             }}
           >
             {/* Top Text Header */}
@@ -316,8 +297,8 @@ export default function ScrollIntro() {
 
             {/* 4 Floating Mineral Cards Orbiting the Bottle */}
             <motion.div
-              className="grid grid-cols-2 gap-4 sm:gap-6 md:gap-8 w-full max-w-4xl mx-auto px-4"
-              style={{ scale: mineralCardsScale }}
+              className="grid grid-cols-2 gap-4 sm:gap-6 md:gap-8 w-full max-w-4xl mx-auto px-4 transform-gpu"
+              style={{ scale: mineralCardsScale, willChange: "transform" }}
             >
               {/* Card 1: Calcium */}
               <div className="glass-card-hover p-4 sm:p-6 text-left border-cyan-500/20">
@@ -373,10 +354,11 @@ export default function ScrollIntro() {
 
           {/* ================= CHAPTER 3: UNCOMPROMISED ARTISAN CRAFT ================= */}
           <motion.div
-            className="absolute inset-0 z-30 flex flex-col justify-center items-center md:items-end max-w-xl ml-auto text-center md:text-right pointer-events-none"
+            className="absolute inset-0 z-30 flex flex-col justify-center items-center md:items-end max-w-xl ml-auto text-center md:text-right pointer-events-none transform-gpu"
             style={{
               opacity: ch3Opacity,
               y: ch3Y,
+              willChange: "transform, opacity",
             }}
           >
             <div className="glass-pill shadow-glow">
@@ -409,10 +391,11 @@ export default function ScrollIntro() {
 
           {/* ================= CHAPTER 4: CALL TO ACTION ================= */}
           <motion.div
-            className="absolute inset-0 z-30 flex flex-col justify-center items-center text-center max-w-3xl mx-auto pointer-events-auto"
+            className="absolute inset-0 z-30 flex flex-col justify-center items-center text-center max-w-3xl mx-auto pointer-events-auto transform-gpu"
             style={{
               opacity: ch4Opacity,
               y: ch4Y,
+              willChange: "transform, opacity",
             }}
           >
             <div className="glass-pill shadow-glow">
