@@ -12,63 +12,44 @@ export default function ScrollIntro() {
   const [mounted, setMounted] = useState(false);
   const [activeChapter, setActiveChapter] = useState(0);
 
-  // Direct scroll tracking synchronized with Lenis for instant 60fps/120fps responsiveness
+  // Track scroll progression through the 350vh scrollytelling container
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
 
-  // Track active chapter
   useEffect(() => {
     setMounted(true);
     const unsubscribe = scrollYProgress.on("change", (latest) => {
       if (latest < 0.25) setActiveChapter(0);
       else if (latest < 0.55) setActiveChapter(1);
-      else if (latest < 0.82) setActiveChapter(2);
+      else if (latest < 0.8) setActiveChapter(2);
       else setActiveChapter(3);
     });
     return () => unsubscribe();
   }, [scrollYProgress]);
 
-  // Mouse tilt parallax for the central 3D element (subtle & lightweight)
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const { clientX, clientY, currentTarget } = e;
-    const rect = currentTarget.getBoundingClientRect();
-    const x = (clientX - rect.left) / rect.width - 0.5;
-    const y = (clientY - rect.top) / rect.height - 0.5;
-    setMousePos({ x, y });
-  };
-
-  // ------------------ STAGE TRANSFORMATIONS (Hardware GPU Accelerated) ------------------
-  // Bottle transforms across stages
-  const bottleX = useTransform(scrollYProgress, [0, 0.25, 0.55, 0.8, 1], ["26%", "0%", "-26%", "0%", "0%"]);
-  const bottleY = useTransform(scrollYProgress, [0, 0.25, 0.55, 0.8, 1], [30, 0, -10, 0, -15]);
-  const bottleScale = useTransform(scrollYProgress, [0, 0.25, 0.55, 0.8, 1], [0.92, 1.05, 1.1, 1.15, 1.02]);
-  const bottleRotateY = useTransform(scrollYProgress, [0, 0.3, 0.6, 0.85, 1], [-15, 0, 12, -6, 0]);
-  const bottleRotateZ = useTransform(scrollYProgress, [0, 0.3, 0.6, 1], [-2, 0, 2, 0]);
-
-  // Background shifts
-  const bgScale = useTransform(scrollYProgress, [0, 1], [1.1, 1.0]);
+  // Stage Transforms for Central Bottle
+  const bottleX = useTransform(scrollYProgress, [0, 0.25, 0.55, 0.8, 1], ["24%", "0%", "-24%", "0%", "0%"]);
+  const bottleY = useTransform(scrollYProgress, [0, 0.25, 0.55, 0.8, 1], [20, 0, -10, 0, -10]);
+  const bottleScale = useTransform(scrollYProgress, [0, 0.25, 0.55, 0.8, 1], [0.95, 1.05, 1.08, 1.12, 1.0]);
 
   // Chapter 1 Animations (Glacial Origin)
   const ch1Opacity = useTransform(scrollYProgress, [0, 0.18, 0.26], [1, 1, 0]);
-  const ch1Y = useTransform(scrollYProgress, [0, 0.18, 0.26], [0, 0, -35]);
+  const ch1Y = useTransform(scrollYProgress, [0, 0.18, 0.26], [0, 0, -30]);
 
-  // Chapter 2 Animations (15-Year Filtration & Minerals)
-  const ch2Opacity = useTransform(scrollYProgress, [0.26, 0.34, 0.5, 0.58], [0, 1, 1, 0]);
-  const ch2Y = useTransform(scrollYProgress, [0.26, 0.34, 0.5, 0.58], [35, 0, 0, -35]);
-  const mineralCardsScale = useTransform(scrollYProgress, [0.28, 0.38, 0.5, 0.56], [0.9, 1, 1, 0.92]);
+  // Chapter 2 Animations (15-Year Rock Filtration)
+  const ch2Opacity = useTransform(scrollYProgress, [0.26, 0.35, 0.48, 0.56], [0, 1, 1, 0]);
+  const ch2Y = useTransform(scrollYProgress, [0.26, 0.35, 0.48, 0.56], [30, 0, 0, -30]);
 
-  // Chapter 3 Animations (Purity & Craft)
-  const ch3Opacity = useTransform(scrollYProgress, [0.58, 0.66, 0.78, 0.84], [0, 1, 1, 0]);
-  const ch3Y = useTransform(scrollYProgress, [0.58, 0.66, 0.78, 0.84], [35, 0, 0, -35]);
+  // Chapter 3 Animations (Artisan Glass Craft)
+  const ch3Opacity = useTransform(scrollYProgress, [0.58, 0.66, 0.76, 0.82], [0, 1, 1, 0]);
+  const ch3Y = useTransform(scrollYProgress, [0.58, 0.66, 0.76, 0.82], [30, 0, 0, -30]);
 
-  // Chapter 4 Animations (Final CTA / Climax)
+  // Chapter 4 Animations (Final CTA)
   const ch4Opacity = useTransform(scrollYProgress, [0.82, 0.9, 1], [0, 1, 1]);
-  const ch4Y = useTransform(scrollYProgress, [0.82, 0.9, 1], [40, 0, 0]);
+  const ch4Y = useTransform(scrollYProgress, [0.82, 0.9, 1], [30, 0, 0]);
 
-  // Chapter Depth Labels
   const chapterDepthLabels = [
     "3,000m Glacial Elevation • Monte Rosa Alps",
     "15-Year Subterranean Granite Filtration",
@@ -106,37 +87,33 @@ export default function ScrollIntro() {
     <section
       ref={containerRef}
       id="intro"
-      className="relative h-[380vh] w-full bg-navy"
-      onMouseMove={handleMouseMove}
+      className="relative h-[360vh] w-full bg-navy overflow-hidden"
     >
       {/* Sticky Fullscreen Viewport */}
-      <div className="sticky top-0 h-screen w-full overflow-hidden bg-navy text-white flex items-center justify-center transform-gpu">
+      <div className="sticky top-0 h-screen w-full overflow-hidden bg-navy text-white flex items-center justify-center">
         
-        {/* Background Alpine Image with Parallax */}
-        <motion.div
-          className="absolute inset-0 -z-30 h-full w-full transform-gpu"
-          style={{ scale: bgScale, willChange: "transform" }}
-        >
+        {/* Background Alpine Image */}
+        <div className="absolute inset-0 -z-30 h-full w-full overflow-hidden">
           <OptimizedImage
             src={images.hero.background}
             alt="Alpine spring source high in the mountains"
             fill
             priority
             sizes="100vw"
-            className="object-cover object-center"
+            className="object-cover object-center brightness-[0.75]"
             wrapperClassName="h-full w-full"
           />
-          {/* Multi-layered cinematic gradient overlays (clean GPU alpha instead of blur) */}
-          <div className="absolute inset-0 bg-gradient-to-b from-navy/95 via-navy/70 to-navy" />
-          <div className="absolute inset-0 bg-navy/40" />
-        </motion.div>
+          {/* Gradients to blend seamlessly into luxury dark theme */}
+          <div className="absolute inset-0 bg-gradient-to-b from-navy/90 via-navy/60 to-navy" />
+          <div className="absolute inset-0 bg-navy/30" />
+        </div>
 
         {/* Ambient Canvas with Floating Water Bubbles */}
         <WaterParticlesCanvas />
 
-        {/* Ambient Glowing Light Orbs */}
-        <div className="pointer-events-none absolute -left-20 top-1/4 h-[450px] w-[450px] rounded-full bg-ocean-500/15 blur-[100px]" />
-        <div className="pointer-events-none absolute -right-20 bottom-1/4 h-[450px] w-[450px] rounded-full bg-cyan-accent/15 blur-[100px]" />
+        {/* Ambient Glow Lights */}
+        <div className="pointer-events-none absolute -left-20 top-1/4 h-[400px] w-[400px] rounded-full bg-ocean-500/15 blur-3xl" />
+        <div className="pointer-events-none absolute -right-20 bottom-1/4 h-[400px] w-[400px] rounded-full bg-cyan-accent/15 blur-3xl" />
 
         {/* TOP STATUS BAR ACCENT */}
         <div className="absolute top-20 sm:top-24 left-0 right-0 z-40 px-6 md:px-12 flex items-center justify-between pointer-events-auto">
@@ -152,93 +129,53 @@ export default function ScrollIntro() {
           {/* Skip Intro Button */}
           <button
             onClick={skipIntro}
-            className="group flex items-center gap-2 rounded-full border border-white/20 bg-navy-card/80 px-4 py-2 text-xs font-semibold tracking-wider uppercase text-white/90 backdrop-blur-md transition-all duration-300 hover:border-cyan-400/50 hover:bg-white/15 hover:text-white"
+            className="group flex items-center gap-2 rounded-full border border-white/20 bg-navy-card/85 px-4 py-2 text-xs font-semibold tracking-wider uppercase text-white/90 backdrop-blur-md transition-all duration-300 hover:border-cyan-400/50 hover:bg-white/15 hover:text-white"
           >
             <span>Skip To Collection</span>
             <ChevronDown className="h-3.5 w-3.5 transition-transform group-hover:translate-y-0.5 text-cyan-accent" />
           </button>
         </div>
 
-        {/* MAIN STAGE CONTENT */}
+        {/* MAIN STAGE CONTENT CONTAINER */}
         <div className="relative mx-auto w-full max-w-7xl h-full px-6 sm:px-8 lg:px-12 flex items-center justify-center">
 
-          {/* CENTER 3D BOTTLE SHOWPIECE */}
+          {/* ================= CENTER BOTTLE SHOWPIECE ================= */}
           <motion.div
-            className="absolute z-20 flex items-center justify-center pointer-events-none transform-gpu"
+            className="absolute z-20 flex items-center justify-center pointer-events-none"
             style={{
               x: bottleX,
               y: bottleY,
               scale: bottleScale,
-              rotateY: bottleRotateY,
-              rotateZ: bottleRotateZ,
-              transformStyle: "preserve-3d",
-              perspective: 1200,
-              willChange: "transform",
             }}
           >
-            <div
-              className="relative transition-transform duration-150 ease-out transform-gpu"
-              style={{
-                transform: `rotateX(${-mousePos.y * 10}deg) rotateY(${mousePos.x * 10}deg)`,
-              }}
-            >
-              {/* Outer Radiant Aura Halo */}
-              <div className="pointer-events-none absolute -inset-8 rounded-full bg-cyan-500/20 blur-2xl animate-pulse" />
+            <div className="relative">
+              {/* Outer Cyan Halo */}
+              <div className="pointer-events-none absolute -inset-6 rounded-full bg-cyan-400/20 blur-2xl" />
 
               {/* Central Bottle Container */}
-              <div className="relative h-[380px] w-[220px] sm:h-[480px] sm:w-[280px] md:h-[540px] md:w-[320px] lg:h-[600px] lg:w-[360px]">
+              <div className="relative h-[360px] w-[200px] sm:h-[460px] sm:w-[260px] md:h-[520px] md:w-[300px] lg:h-[580px] lg:w-[340px]">
                 <OptimizedImage
                   src={images.hero.bottle}
                   alt="Iconic pure alpine spring water bottle"
                   fill
                   priority
-                  sizes="(max-width: 768px) 280px, 360px"
+                  sizes="(max-width: 768px) 260px, 340px"
                   className="object-contain drop-shadow-[0_20px_40px_rgba(14,165,233,0.45)]"
                   wrapperClassName="h-full w-full"
                 />
-
-                {/* Specular Light Reflection Sweep */}
-                <div
-                  className="pointer-events-none absolute inset-0 mix-blend-overlay overflow-hidden rounded-3xl"
-                  style={{
-                    maskImage: `url(${images.hero.bottle})`,
-                    maskSize: "contain",
-                    maskPosition: "center",
-                    maskRepeat: "no-repeat",
-                    WebkitMaskImage: `url(${images.hero.bottle})`,
-                    WebkitMaskSize: "contain",
-                    WebkitMaskPosition: "center",
-                    WebkitMaskRepeat: "no-repeat",
-                  }}
-                >
-                  <motion.div
-                    className="absolute -inset-y-1/2 -left-1/2 w-[200%] bg-gradient-to-r from-transparent via-white/75 to-transparent"
-                    animate={{
-                      x: ["-100%", "100%"],
-                    }}
-                    transition={{
-                      repeat: Infinity,
-                      repeatDelay: 3.5,
-                      duration: 2.0,
-                      ease: "easeInOut",
-                    }}
-                    style={{ transform: "rotate(25deg)" }}
-                  />
-                </div>
               </div>
 
               {/* Floor Shadow Ring */}
-              <div className="pointer-events-none absolute -bottom-5 left-1/2 h-6 w-3/4 -translate-x-1/2 rounded-[100%] bg-cyan-500/25 blur-sm" />
+              <div className="pointer-events-none absolute -bottom-4 left-1/2 h-5 w-3/4 -translate-x-1/2 rounded-[100%] bg-cyan-500/25 blur-sm" />
             </div>
           </motion.div>
 
           {/* ================= CHAPTER 1: GLACIAL ORIGIN ================= */}
           <motion.div
-            className="absolute inset-0 z-30 flex flex-col justify-center items-center md:items-start max-w-xl text-center md:text-left pointer-events-none transform-gpu"
+            className="absolute inset-x-6 sm:inset-x-8 lg:inset-x-12 z-30 flex flex-col justify-center items-center md:items-start max-w-xl text-center md:text-left pointer-events-none"
             style={{
               opacity: ch1Opacity,
               y: ch1Y,
-              willChange: "transform, opacity",
             }}
           >
             <div className="glass-pill shadow-glow">
@@ -271,11 +208,10 @@ export default function ScrollIntro() {
 
           {/* ================= CHAPTER 2: 15-YEAR MINERAL FILTRATION ================= */}
           <motion.div
-            className="absolute inset-0 z-30 flex flex-col justify-between py-24 sm:py-28 pointer-events-none transform-gpu"
+            className="absolute inset-x-6 sm:inset-x-8 lg:inset-x-12 z-30 flex flex-col justify-between py-24 sm:py-28 pointer-events-none"
             style={{
               opacity: ch2Opacity,
               y: ch2Y,
-              willChange: "transform, opacity",
             }}
           >
             {/* Top Text Header */}
@@ -295,13 +231,10 @@ export default function ScrollIntro() {
               </p>
             </div>
 
-            {/* 4 Floating Mineral Cards Orbiting the Bottle */}
-            <motion.div
-              className="grid grid-cols-2 gap-4 sm:gap-6 md:gap-8 w-full max-w-4xl mx-auto px-4 transform-gpu"
-              style={{ scale: mineralCardsScale, willChange: "transform" }}
-            >
+            {/* 4 Mineral Cards Orbiting the Bottle */}
+            <div className="grid grid-cols-2 gap-4 sm:gap-6 md:gap-8 w-full max-w-4xl mx-auto px-4">
               {/* Card 1: Calcium */}
-              <div className="glass-card-hover p-4 sm:p-6 text-left border-cyan-500/20">
+              <div className="glass-card p-4 sm:p-6 text-left border-cyan-500/20">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold uppercase tracking-wider text-cyan-300">Calcium (Ca²⁺)</span>
                   <span className="text-lg sm:text-2xl font-black text-white">68 <span className="text-xs font-normal text-cyan-300">mg/L</span></span>
@@ -309,11 +242,11 @@ export default function ScrollIntro() {
                 <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
                   <div className="h-full w-[75%] rounded-full bg-gradient-to-r from-cyan-400 to-ocean-500" />
                 </div>
-                <p className="mt-2.5 text-xs text-slate-400 hidden sm:block">Essential for cellular stamina and neuromuscular equilibrium.</p>
+                <p className="mt-2 text-xs text-slate-400 hidden sm:block">Essential for cellular stamina and neuromuscular equilibrium.</p>
               </div>
 
               {/* Card 2: Magnesium */}
-              <div className="glass-card-hover p-4 sm:p-6 text-right sm:text-left border-cyan-500/20">
+              <div className="glass-card p-4 sm:p-6 text-right sm:text-left border-cyan-500/20">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold uppercase tracking-wider text-cyan-300">Magnesium (Mg²⁺)</span>
                   <span className="text-lg sm:text-2xl font-black text-white">24 <span className="text-xs font-normal text-cyan-300">mg/L</span></span>
@@ -321,11 +254,11 @@ export default function ScrollIntro() {
                 <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
                   <div className="h-full w-[60%] rounded-full bg-gradient-to-r from-cyan-400 to-ocean-500" />
                 </div>
-                <p className="mt-2.5 text-xs text-slate-400 hidden sm:block">Powers ATP cellular vitality and smooth muscular recovery.</p>
+                <p className="mt-2 text-xs text-slate-400 hidden sm:block">Powers ATP cellular vitality and smooth muscular recovery.</p>
               </div>
 
               {/* Card 3: Silica */}
-              <div className="glass-card-hover p-4 sm:p-6 text-left border-cyan-500/20">
+              <div className="glass-card p-4 sm:p-6 text-left border-cyan-500/20">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold uppercase tracking-wider text-cyan-300">Silica (SiO₂)</span>
                   <span className="text-lg sm:text-2xl font-black text-white">16 <span className="text-xs font-normal text-cyan-300">mg/L</span></span>
@@ -333,11 +266,11 @@ export default function ScrollIntro() {
                 <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
                   <div className="h-full w-[45%] rounded-full bg-gradient-to-r from-cyan-400 to-ocean-500" />
                 </div>
-                <p className="mt-2.5 text-xs text-slate-400 hidden sm:block">Enhances natural skin elasticity, hydration, and glow.</p>
+                <p className="mt-2 text-xs text-slate-400 hidden sm:block">Enhances natural skin elasticity, hydration, and glow.</p>
               </div>
 
               {/* Card 4: Balanced pH */}
-              <div className="glass-card-hover p-4 sm:p-6 text-right sm:text-left border-cyan-500/20">
+              <div className="glass-card p-4 sm:p-6 text-right sm:text-left border-cyan-500/20">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold uppercase tracking-wider text-cyan-300">Alkaline pH</span>
                   <span className="text-lg sm:text-2xl font-black text-white">7.4 <span className="text-xs font-normal text-cyan-300">pH</span></span>
@@ -345,20 +278,19 @@ export default function ScrollIntro() {
                 <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
                   <div className="h-full w-[85%] rounded-full bg-gradient-to-r from-cyan-400 to-teal-400" />
                 </div>
-                <p className="mt-2.5 text-xs text-slate-400 hidden sm:block">Flawlessly mirrors blood plasma physiological balance.</p>
+                <p className="mt-2 text-xs text-slate-400 hidden sm:block">Flawlessly mirrors blood plasma physiological balance.</p>
               </div>
-            </motion.div>
+            </div>
 
             <div />
           </motion.div>
 
           {/* ================= CHAPTER 3: UNCOMPROMISED ARTISAN CRAFT ================= */}
           <motion.div
-            className="absolute inset-0 z-30 flex flex-col justify-center items-center md:items-end max-w-xl ml-auto text-center md:text-right pointer-events-none transform-gpu"
+            className="absolute inset-x-6 sm:inset-x-8 lg:inset-x-12 z-30 flex flex-col justify-center items-center md:items-end max-w-xl ml-auto text-center md:text-right pointer-events-none"
             style={{
               opacity: ch3Opacity,
               y: ch3Y,
-              willChange: "transform, opacity",
             }}
           >
             <div className="glass-pill shadow-glow">
@@ -391,11 +323,10 @@ export default function ScrollIntro() {
 
           {/* ================= CHAPTER 4: CALL TO ACTION ================= */}
           <motion.div
-            className="absolute inset-0 z-30 flex flex-col justify-center items-center text-center max-w-3xl mx-auto pointer-events-auto transform-gpu"
+            className="absolute inset-x-6 sm:inset-x-8 lg:inset-x-12 z-30 flex flex-col justify-center items-center text-center max-w-3xl mx-auto pointer-events-auto"
             style={{
               opacity: ch4Opacity,
               y: ch4Y,
-              willChange: "transform, opacity",
             }}
           >
             <div className="glass-pill shadow-glow">

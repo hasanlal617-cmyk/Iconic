@@ -4,7 +4,8 @@
 
 @layer base {
   html {
-    overflow-x: clip;
+    overflow-x: hidden;
+    width: 100%;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -15,7 +16,9 @@
   body {
     background-color: #060d19;
     color: #f1f5f9;
-    overflow-x: clip;
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
     font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
   }
 
@@ -32,22 +35,11 @@
     background: #060d19;
   }
   ::-webkit-scrollbar-thumb {
-    background: rgba(34, 211, 238, 0.2);
+    background: rgba(34, 211, 238, 0.25);
     border-radius: 9999px;
   }
   ::-webkit-scrollbar-thumb:hover {
     background: rgba(34, 211, 238, 0.5);
-  }
-
-  /* GPU-accelerated compositing for scrollytelling */
-  #intro {
-    contain: layout style;
-  }
-
-  #intro .sticky {
-    will-change: transform;
-    transform: translateZ(0);
-    backface-visibility: hidden;
   }
 }
 
@@ -57,11 +49,11 @@
   }
 
   .glass-card {
-    @apply rounded-3xl border border-white/10 bg-navy-card/80 shadow-glass-lg backdrop-blur-2xl transition-all duration-300;
+    @apply rounded-3xl border border-white/10 bg-navy-card/85 shadow-glass-lg backdrop-blur-xl transition-all duration-300;
   }
 
   .glass-card-hover {
-    @apply rounded-3xl border border-white/10 bg-navy-card/80 shadow-glass-lg backdrop-blur-2xl transition-all duration-300 hover:border-cyan-400/30 hover:bg-navy-card/95 hover:shadow-glow;
+    @apply rounded-3xl border border-white/10 bg-navy-card/85 shadow-glass-lg backdrop-blur-xl transition-all duration-300 hover:border-cyan-400/30 hover:bg-navy-card/95 hover:shadow-glow;
   }
 
   .glass-pill {
@@ -69,7 +61,7 @@
   }
 
   .section-padding {
-    @apply px-4 py-24 sm:px-6 lg:px-8 lg:py-32;
+    @apply px-4 py-20 sm:px-6 lg:px-8 lg:py-28;
   }
 
   .section-heading {
